@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fun Multiplication Tables for Kids</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Multiplication Tables Adventure</h1>
+            <p>Learn your tables with fun songs in Canadian English!</p>
+        </header>
+
+        <div class="mode-selection">
+            <button id="learn-mode-btn" class="mode-btn active">Learn Mode</button>
+            <button id="quiz-mode-btn" class="mode-btn">Quiz Mode</button>
+        </div>
+
+        <div id="learn-mode" class="mode-container active">
+            <div class="table-selection">
+                <h2>Choose a Table to Learn:</h2>
+                <div class="number-buttons">
+                    <!-- Buttons for tables 2-12 -->
+                    <button class="table-btn" data-table="2">2</button>
+                    <button class="table-btn" data-table="3">3</button>
+                    <button class="table-btn" data-table="4">4</button>
+                    <button class="table-btn" data-table="5">5</button>
+                    <button class="table-btn" data-table="6">6</button>
+                    <button class="table-btn" data-table="7">7</button>
+                    <button class="table-btn" data-table="8">8</button>
+                    <button class="table-btn" data-table="9">9</button>
+                    <button class="table-btn" data-table="10">10</button>
+                    <button class="table-btn" data-table="11">11</button>
+                    <button class="table-btn" data-table="12">12</button>
+                </div>
+            </div>
+
+        <div class="table-display">
+            <h2 id="current-table-title">Select a table to begin</h2>
+            <div id="table-content" class="table-content">
+                <!-- Table content will be displayed here -->
+            </div>
+        </div>
+
+        <div class="audio-controls">
+            <button id="play-btn" disabled>Play Table Song</button>
+            <button id="pause-btn" disabled>Pause</button>
+            <button id="repeat-btn" disabled>Repeat: OFF</button>
+            <div class="progress-bar">
+                <div id="progress" class="progress"></div>
+            </div>
+        </div>
+
+        <div class="progress-tracker">
+            <h2>Your Progress</h2>
+            <div class="progress-grid">
+                <!-- Progress indicators for each table -->
+                <div class="progress-item" data-table="2">
+                    <span class="number">2</span>
+                    <span class="status">Not Started</span>
+                </div>
+                <div class="progress-item" data-table="3">
+                    <span class="number">3</span>
+                    <span class="status">Not Started</span>
+                </div>
+                <div class="progress-item" data-table="4">
+                    <span class="number">4</span>
+                    <span class="status">Not Started</span>
+                </div>
+                <div class="progress-item" data-table="5">
+                    <span class="number">5</span>
+                    <span class="status">Not Started</span>
+                </div>
+                <div class="progress-item" data-table="6">
+                    <span class="number">6</span>
+                    <span class="status">Not Started</span>
+                </div>
+                <div class="progress-item" data-table="7">
+                    <span class="number">7</span>
+                    <span class="status">Not Started</span>
+                </div>
+                <div class="progress-item" data-table="8">
+                    <span class="number">8</span>
+                    <span class="status">Not Started</span>
+                </div>
+                <div class="progress-item" data-table="9">
+                    <span class="number">9</span>
+                    <span class="status">Not Started</span>
+                </div>
+                <div class="progress-item" data-table="10">
+                    <span class="number">10</span>
+                    <span class="status">Not Started</span>
+                </div>
+                <div class="progress-item" data-table="11">
+                    <span class="number">11</span>
+                    <span class="status">Not Started</span>
+                </div>
+                <div class="progress-item" data-table="12">
+                    <span class="number">12</span>
+                    <span class="status">Not Started</span>
+                </div>
+            </div>
+        </div>
+        </div>
+        
+        <div id="quiz-mode" class="mode-container">
+            <div class="quiz-container">
+                <h2>Test Your Knowledge!</h2>
+                
+                <div class="quiz-settings">
+                    <div class="quiz-range">
+                        <h3>Choose Tables to Include:</h3>
+                        <div class="quiz-number-buttons">
+                            <button class="quiz-table-btn active" data-table="2">2</button>
+                            <button class="quiz-table-btn active" data-table="3">3</button>
+                            <button class="quiz-table-btn active" data-table="4">4</button>
+                            <button class="quiz-table-btn active" data-table="5">5</button>
+                            <button class="quiz-table-btn active" data-table="6">6</button>
+                            <button class="quiz-table-btn active" data-table="7">7</button>
+                            <button class="quiz-table-btn active" data-table="8">8</button>
+                            <button class="quiz-table-btn active" data-table="9">9</button>
+                            <button class="quiz-table-btn active" data-table="10">10</button>
+                            <button class="quiz-table-btn active" data-table="11">11</button>
+                            <button class="quiz-table-btn active" data-table="12">12</button>
+                        </div>
+                    </div>
+                    <button id="start-quiz-btn" class="start-quiz-btn">Start Quiz</button>
+                </div>
+                
+                <div class="quiz-question-container" style="display: none;">
+                    <div class="question-display">
+                        <h3 id="question-text">What is 5 × 7?</h3>
+                        <div class="answer-input">
+                            <input type="number" id="answer-input" placeholder="Your answer">
+                            <button id="submit-answer-btn">Submit</button>
+                        </div>
+                    </div>
+                    
+                    <div class="feedback-display">
+                        <div id="feedback-message" class="feedback-message"></div>
+                        <div class="score-display">
+                            <span>Score: <span id="current-score">0</span>/<span id="total-questions">0</span></span>
+                        </div>
+                        <button id="next-question-btn" style="display: none;">Next Question</button>
+                        <button id="end-quiz-btn" style="display: none;">End Quiz</button>
+                    </div>
+                </div>
+                
+                <div class="quiz-results" style="display: none;">
+                    <h3>Quiz Results</h3>
+                    <div class="final-score">
+                        <p>Your score: <span id="final-score">0</span>/<span id="final-total">0</span></p>
+                        <p class="percentage">Percentage: <span id="score-percentage">0</span>%</p>
+                    </div>
+                    <div class="results-feedback" id="results-feedback">Great job!</div>
+                    <button id="restart-quiz-btn">Take Another Quiz</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="table-audio" src=""></audio>
+    <script src="script.js"></script>
+</body>
+</html>
