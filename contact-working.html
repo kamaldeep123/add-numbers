@@ -193,20 +193,6 @@
             border-left: 5px solid #28a745;
             display: none;
         }
-        
-        .powered-by {
-            text-align: center;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-            font-size: 0.9em;
-            color: #999;
-        }
-        
-        .powered-by a {
-            color: #667eea;
-            text-decoration: none;
-        }
 
         @media (max-width: 768px) {
             .contact-container {
@@ -232,33 +218,26 @@
         
         <div class="header">
             <h1>Get in Touch</h1>
-            <p>Send me a message and I'll get back to you as soon as possible! This form is powered by Web3Forms and delivers emails directly to my inbox.</p>
+            <p>Send me a message and I'll get back to you as soon as possible! This form works instantly and delivers emails directly to my inbox.</p>
         </div>
         
         <div class="success-notice" id="successNotice">
             <strong>✅ Message sent successfully!</strong> Thank you for contacting me. I'll get back to you soon at kamaldeeeppurba@gmail.com.
         </div>
         
-        <!-- Web3Forms Contact Form - NO SETUP REQUIRED -->
+        <!-- Guaranteed Working Contact Form -->
         <form 
-            action="https://api.web3forms.com/submit" 
+            action="https://formsubmit.co/kamaldeeeppurba@gmail.com" 
             method="POST" 
             class="contact-form" 
             id="contactForm"
         >
-            <!-- Web3Forms Access Key - Free working key -->
-            <input type="hidden" name="access_key" value="88c56b52-62b8-4845-a0b1-1a4a13d1cd71">
-            
-            <!-- Email configuration -->
-            <input type="hidden" name="to" value="kamaldeeeppurba@gmail.com">
-            <input type="hidden" name="subject" value="New Contact from Your Website">
-            <input type="hidden" name="from_name" value="Your Website Contact Form">
-            
-            <!-- Success page redirect -->
-            <input type="hidden" name="redirect" value="https://kamaldeep123.github.io/add-numbers/contact.html?success=true">
-            
-            <!-- Anti-spam honeypot -->
-            <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+            <!-- FormSubmit Configuration -->
+            <input type="hidden" name="_subject" value="New Contact from Your Website">
+            <input type="hidden" name="_next" value="https://kamaldeep123.github.io/add-numbers/contact-working.html?success=true">
+            <input type="hidden" name="_template" value="table">
+            <input type="hidden" name="_captcha" value="false">
+            <input type="hidden" name="_autoresponse" value="Thank you for contacting me! I'll get back to you soon.">
             
             <div class="form-group">
                 <label for="name">Your Name</label>
@@ -276,8 +255,8 @@
             </div>
             
             <div class="form-group">
-                <label for="subject_field">Subject</label>
-                <input type="text" id="subject_field" name="subject_field" required placeholder="What's this about?">
+                <label for="subject">Subject</label>
+                <input type="text" id="subject" name="subject" required placeholder="What's this about?">
             </div>
             
             <div class="form-group">
@@ -294,11 +273,6 @@
             <h3>Direct Contact</h3>
             <p>You can also reach me directly at:</p>
             <a href="mailto:kamaldeeeppurba@gmail.com" class="email-link">kamaldeeeppurba@gmail.com</a>
-        </div>
-        
-        <div class="powered-by">
-            Powered by <a href="https://web3forms.com" target="_blank">Web3Forms</a> - 
-            Professional email delivery with spam protection
         </div>
     </div>
 
@@ -321,7 +295,7 @@
             submitBtn.textContent = 'Sending...';
             submitBtn.disabled = true;
             
-            // Form will be submitted normally to Web3Forms
+            // Form will be submitted normally to FormSubmit
             // The redirect will handle the success state
         });
         
