@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmailJS Auto-Setup Tool</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .setup-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 { color: #333; text-align: center; margin-bottom: 30px; }
+        .step { 
+            background: #f8f9fa; 
+            border-left: 4px solid #667eea; 
+            padding: 20px; 
+            margin: 20px 0; 
+            border-radius: 5px; 
+        }
+        .step h3 { color: #667eea; margin-top: 0; }
+        .input-group { margin: 15px 0; }
+        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .input-group input { 
+            width: 100%; 
+            padding: 10px; 
+            border: 1px solid #ddd; 
+            border-radius: 5px; 
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        .btn:hover { background: #5a6fd8; }
+        .generated-code {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            margin: 15px 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success { color: #28a745; font-weight: bold; }
+        .warning { color: #ffc107; font-weight: bold; }
+        .instructions {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <h1>📧 EmailJS Auto-Setup Tool</h1>
+        <p style="text-align: center; color: #666;">
+            Configure your contact form for instant email delivery in 2 minutes!
+        </p>
+
+        <!-- Step 1: Account Setup -->
+        <div class="step">
+            <h3>Step 1: Create EmailJS Account</h3>
+            <p>1. Go to <a href="https://www.emailjs.com/" target="_blank">EmailJS.com</a></p>
+            <p>2. Click "Sign Up Free" and create your account</p>
+            <p>3. Verify your email address</p>
+            <p class="success">✅ Account created? Continue to Step 2</p>
+        </div>
+
+        <!-- Step 2: Service Setup -->
+        <div class="step">
+            <h3>Step 2: Connect Gmail Service</h3>
+            <p>1. In EmailJS dashboard, click "Add Service"</p>
+            <p>2. Choose "Gmail"</p>
+            <p>3. Click "Connect Account" and sign in with <strong>kamaldeeeppurba@gmail.com</strong></p>
+            <p>4. Copy your Service ID from the dashboard:</p>
+            
+            <div class="input-group">
+                <label for="serviceId">Service ID (e.g., service_abc123):</label>
+                <input type="text" id="serviceId" placeholder="Paste your service ID here">
+            </div>
+        </div>
+
+        <!-- Step 3: Template Setup -->
+        <div class="step">
+            <h3>Step 3: Create Email Template</h3>
+            <p>1. Click "Create Template" in your EmailJS dashboard</p>
+            <p>2. Use this template configuration:</p>
+            
+            <div class="instructions">
+                <strong>Template Settings:</strong><br>
+                • Template Name: Contact Form<br>
+                • Subject: New Contact: {{subject}}<br>
+                • Content: (Copy the content below)
+            </div>
+            
+            <div class="generated-code">Hello,
+
+You have received a new message from your website:
+
+Name: {{from_name}}
+Email: {{from_email}}
+Subject: {{subject}}
+Time: {{timestamp}}
+
+Message:
+{{message}}
+
+---
+Reply to this email to respond directly to {{from_name}}.
+
+Best regards,
+Your Website Contact Form</div>
+            
+            <button class="btn" onclick="copyTemplate()">📋 Copy Template</button>
+            
+            <div class="input-group">
+                <label for="templateId">Template ID (e.g., template_xyz789):</label>
+                <input type="text" id="templateId" placeholder="Paste your template ID here">
+            </div>
+        </div>
+
+        <!-- Step 4: Get Public Key -->
+        <div class="step">
+            <h3>Step 4: Get Public Key</h3>
+            <p>1. Go to "Account" → "General" in your EmailJS dashboard</p>
+            <p>2. Copy your Public Key:</p>
+            
+            <div class="input-group">
+                <label for="publicKey">Public Key (e.g., user_abc123xyz):</label>
+                <input type="text" id="publicKey" placeholder="Paste your public key here">
+            </div>
+        </div>
+
+        <!-- Step 5: Generate Code -->
+        <div class="step">
+            <h3>Step 5: Generate Your Code</h3>
+            <button class="btn" onclick="generateCode()">🚀 Generate Contact Form Code</button>
+            
+            <div id="generatedCodeSection" style="display: none;">
+                <h4>Your Updated contact.html Code:</h4>
+                <div class="instructions">
+                    <strong>Instructions:</strong><br>
+                    1. Copy the code below<br>
+                    2. Replace your entire contact.html file with this code<br>
+                    3. Save and push to GitHub<br>
+                    4. Test your contact form!
+                </div>
+                
+                <div class="generated-code" id="generatedCode"></div>
+                
+                <button class="btn" onclick="copyGeneratedCode()">📋 Copy All Code</button>
+                <button class="btn" onclick="downloadCode()">💾 Download File</button>
+            </div>
+        </div>
+
+        <!-- Step 6: Testing -->
+        <div class="step">
+            <h3>Step 6: Test Your Setup</h3>
+            <p>1. Save the generated code as your new contact.html</p>
+            <p>2. Push changes to GitHub</p>
+            <p>3. Visit: <a href="https://kamaldeep123.github.io/add-numbers/contact.html" target="_blank">Your Contact Page</a></p>
+            <p>4. Fill out a test message</p>
+            <p>5. Check kamaldeeeppurba@gmail.com for the email!</p>
+            <p class="success">✅ Working? You're all set! 🎉</p>
+        </div>
+    </div>
+
+    <script>
+        function copyTemplate() {
+            const template = `Hello,
+
+You have received a new message from your website:
+
+Name: {{from_name}}
+Email: {{from_email}}
+Subject: {{subject}}
+Time: {{timestamp}}
+
+Message:
+{{message}}
+
+---
+Reply to this email to respond directly to {{from_name}}.
+
+Best regards,
+Your Website Contact Form`;
+            
+            navigator.clipboard.writeText(template).then(() => {
+                alert('Template copied! Paste this into your EmailJS template editor.');
+            });
+        }
+
+        function generateCode() {
+            const serviceId = document.getElementById('serviceId').value.trim();
+            const templateId = document.getElementById('templateId').value.trim();
+            const publicKey = document.getElementById('publicKey').value.trim();
+
+            if (!serviceId || !templateId || !publicKey) {
+                alert('Please fill in all fields (Service ID, Template ID, and Public Key)');
+                return;
+            }
+
+            const updatedCode = generateContactHTML(serviceId, templateId, publicKey);
+            document.getElementById('generatedCode').textContent = updatedCode;
+            document.getElementById('generatedCodeSection').style.display = 'block';
+        }
+
+        function generateContactHTML(serviceId, templateId, publicKey) {
+            return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Three Number Calculator</title>
+    
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init({
+                publicKey: "${publicKey}",
+            });
+        })();
+    </script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0; padding: 20px; min-height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .contact-container {
+            background: white; border-radius: 20px; padding: 40px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            max-width: 600px; width: 100%; position: relative; overflow: hidden;
+        }
+        .contact-container::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #4cc9f0);
+        }
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 {
+            color: #333; font-size: 2.5em; margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .header p { color: #666; font-size: 1.1em; line-height: 1.6; }
+        .form-group { margin-bottom: 25px; }
+        label { display: block; margin-bottom: 8px; color: #333; font-weight: 600; }
+        input[type="text"], input[type="email"], textarea {
+            width: 100%; padding: 15px; border: 2px solid #e1e5e9;
+            border-radius: 10px; font-size: 1em; transition: all 0.3s ease;
+            background-color: #f8f9fa;
+        }
+        input:focus, textarea:focus {
+            outline: none; border-color: #667eea; background-color: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); transform: translateY(-2px);
+        }
+        textarea { resize: vertical; min-height: 120px; max-height: 200px; }
+        .submit-btn {
+            width: 100%; padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; border: none; border-radius: 10px;
+            font-size: 1.1em; font-weight: 600; cursor: pointer;
+            transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3); }
+        .submit-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+        .back-link {
+            position: absolute; top: 20px; left: 20px; color: #667eea;
+            text-decoration: none; font-weight: 600; padding: 8px 15px;
+            border-radius: 20px; background-color: rgba(102, 126, 234, 0.1);
+        }
+        .success-message {
+            background: #d4edda; color: #155724; border: 1px solid #c3e6cb;
+            padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center;
+            display: none;
+        }
+        .contact-info {
+            text-align: center; padding-top: 30px; border-top: 2px solid #f0f0f0; margin-top: 30px;
+        }
+        .email-link { color: #667eea; text-decoration: none; font-size: 1.1em; }
+        @media (max-width: 768px) {
+            .contact-container { margin: 10px; padding: 30px 20px; }
+            .header h1 { font-size: 2em; }
+            .back-link { position: static; display: inline-block; margin-bottom: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="contact-container">
+        <a href="calculator.html" class="back-link">← Back to Calculator</a>
+        
+        <div class="header">
+            <h1>Get in Touch</h1>
+            <p>Send me a message and I'll get back to you as soon as possible!</p>
+        </div>
+        
+        <div class="success-message" id="successMessage">
+            ✅ Message sent successfully! I'll get back to you soon.
+        </div>
+        
+        <form class="contact-form" id="contactForm">
+            <input type="hidden" name="timestamp" id="timestamp">
+            
+            <div class="form-group">
+                <label for="from_name">Your Name</label>
+                <input type="text" id="from_name" name="from_name" required placeholder="Enter your full name">
+            </div>
+            
+            <div class="form-group">
+                <label for="from_email">Your Email</label>
+                <input type="email" id="from_email" name="from_email" required placeholder="Enter your email address">
+            </div>
+            
+            <div class="form-group">
+                <label for="subject">Subject</label>
+                <input type="text" id="subject" name="subject" required placeholder="What's this about?">
+            </div>
+            
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" required placeholder="Write your message here..."></textarea>
+            </div>
+            
+            <button type="submit" class="submit-btn" id="submitBtn">Send Message</button>
+        </form>
+        
+        <div class="contact-info">
+            <h3>Direct Contact</h3>
+            <p>You can also reach me directly at:</p>
+            <a href="mailto:kamaldeeeppurba@gmail.com" class="email-link">kamaldeeeppurba@gmail.com</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('timestamp').value = new Date().toLocaleString();
+        
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const successMessage = document.getElementById('successMessage');
+            
+            submitBtn.textContent = 'Sending...';
+            submitBtn.disabled = true;
+            successMessage.style.display = 'none';
+            
+            emailjs.sendForm('${serviceId}', '${templateId}', this)
+                .then(function(response) {
+                    console.log('SUCCESS!', response.status, response.text);
+                    successMessage.style.display = 'block';
+                    document.getElementById('contactForm').reset();
+                    document.getElementById('timestamp').value = new Date().toLocaleString();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                })
+                .catch(function(error) {
+                    console.log('FAILED...', error);
+                    alert('Failed to send message. Please try again or contact me directly.');
+                })
+                .finally(function() {
+                    submitBtn.textContent = 'Send Message';
+                    submitBtn.disabled = false;
+                });
+        });
+    </script>
+</body>
+</html>`;
+        }
+
+        function copyGeneratedCode() {
+            const code = document.getElementById('generatedCode').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                alert('Code copied! Replace your contact.html file with this code.');
+            });
+        }
+
+        function downloadCode() {
+            const code = document.getElementById('generatedCode').textContent;
+            const blob = new Blob([code], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'contact.html';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

@@ -9,10 +9,10 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script type="text/javascript">
         (function() {
-            // Initialize EmailJS with your public key
-            // You'll need to replace 'YOUR_PUBLIC_KEY' with your actual EmailJS public key
+            // Initialize EmailJS with demo public key
+            // Replace with your actual key after setup: https://dashboard.emailjs.com/admin/account
             emailjs.init({
-                publicKey: "YOUR_PUBLIC_KEY", // Replace with your EmailJS public key
+                publicKey: "your_public_key_here", // Get from EmailJS dashboard
             });
         })();
     </script>
@@ -219,14 +219,82 @@
         }
         
         .setup-notice {
-            background-color: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeaa7;
+            background-color: #e7f3ff;
+            color: #0066cc;
+            border: 1px solid #b3d9ff;
             margin-bottom: 30px;
+            position: relative;
         }
         
         .setup-notice strong {
             color: #667eea;
+        }
+        
+        .setup-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-top: 10px;
+            transition: background 0.3s ease;
+        }
+        
+        .setup-btn:hover {
+            background: #5a6fd8;
+        }
+        
+        .quick-setup {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .quick-setup h4 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .setup-step {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .setup-step strong {
+            color: #667eea;
+        }
+        
+        .copy-code {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            position: relative;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            cursor: pointer;
         }
 
         @media (max-width: 768px) {
@@ -258,7 +326,50 @@
         
         <!-- Setup Notice -->
         <div class="message setup-notice" id="setupNotice">
-            <strong>Setup Required:</strong> To enable direct email sending, please follow the setup instructions in the <strong>EMAILJS_SETUP.md</strong> file. For now, the form will use a mailto fallback.
+            <strong>🚀 Quick Setup Required (2 minutes):</strong> Enable instant email delivery by setting up EmailJS. 
+            <br>Currently using mailto fallback.
+            <br><button class="setup-btn" onclick="toggleSetup()">Show Quick Setup</button>
+        </div>
+        
+        <!-- Quick Setup Guide -->
+        <div class="quick-setup" id="quickSetup">
+            <h4>📧 2-Minute EmailJS Setup</h4>
+            
+            <div class="setup-step">
+                <strong>Step 1:</strong> Go to <a href="https://www.emailjs.com/" target="_blank">EmailJS.com</a> and sign up free
+            </div>
+            
+            <div class="setup-step">
+                <strong>Step 2:</strong> Add Gmail service, connect kamaldeeeppurba@gmail.com
+            </div>
+            
+            <div class="setup-step">
+                <strong>Step 3:</strong> Create template with this content:
+                <div class="copy-code">
+Subject: New Contact: {{subject}}<br>
+Content: Name: {{from_name}}<br>Email: {{from_email}}<br>Message: {{message}}
+                    <button class="copy-btn" onclick="copyText(this)">Copy</button>
+                </div>
+            </div>
+            
+            <div class="setup-step">
+                <strong>Step 4:</strong> Get your keys and replace in contact.html:
+                <div class="copy-code" id="replaceCode">
+// Replace line ~16:<br>
+publicKey: "YOUR_PUBLIC_KEY",<br><br>
+// Replace line ~191:<br>
+emailjs.sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', this)
+                    <button class="copy-btn" onclick="copyText(this)">Copy</button>
+                </div>
+            </div>
+            
+            <div class="setup-step">
+                <strong>Step 5:</strong> Set emailjsConfigured = true (line ~130)
+            </div>
+            
+            <p style="margin-top: 15px; color: #666;">
+                <strong>✅ After setup:</strong> Emails will be sent instantly to kamaldeeeppurba@gmail.com!
+            </p>
         </div>
         
         <div class="message success-message" id="successMessage">
@@ -309,11 +420,27 @@
         // Set timestamp when page loads
         document.getElementById('timestamp').value = new Date().toLocaleString();
         
-        // Check if EmailJS is properly configured
-        let emailjsConfigured = false;
+        // EmailJS configuration status
+        let emailjsConfigured = false; // Set to true after EmailJS setup
         
         // Show setup notice initially
         document.getElementById('setupNotice').style.display = 'block';
+        
+        // Toggle setup guide
+        function toggleSetup() {
+            const quickSetup = document.getElementById('quickSetup');
+            quickSetup.style.display = quickSetup.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        // Copy text function
+        function copyText(button) {
+            const codeBlock = button.parentElement;
+            const text = codeBlock.textContent.replace('Copy', '').trim();
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Copied!';
+                setTimeout(() => button.textContent = 'Copy', 2000);
+            });
+        }
         
         document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -334,10 +461,11 @@
             
             // Try EmailJS first if configured
             if (typeof emailjs !== 'undefined' && emailjsConfigured) {
-                // EmailJS sending
-                emailjs.sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', this)
+                // EmailJS sending - replace with your actual service and template IDs
+                emailjs.sendForm('your_service_id', 'your_template_id', this)
                     .then(function(response) {
                         console.log('EmailJS SUCCESS!', response.status, response.text);
+                        successMessage.innerHTML = '✅ Message sent successfully via EmailJS! I\'ll get back to you soon.';
                         successMessage.style.display = 'block';
                         document.getElementById('contactForm').reset();
                         document.getElementById('timestamp').value = new Date().toLocaleString();
@@ -365,25 +493,30 @@
                 const message = formData.get('message');
                 const timestamp = formData.get('timestamp');
                 
-                const emailBody = `Name: ${name}
+                const emailBody = `Hi,
+
+You received a new message from your website contact form:
+
+Name: ${name}
 Email: ${email}
 Time: ${timestamp}
-
 Subject: ${subject}
 
 Message:
 ${message}
 
 ---
-Sent from your website contact form`;
+Sent from your website contact form
+Reply directly to this email to respond to ${name}.`;
                 
-                const mailtoLink = `mailto:kamaldeeeppurba@gmail.com?subject=${encodeURIComponent('Contact Form: ' + subject)}&body=${encodeURIComponent(emailBody)}`;
+                const mailtoLink = `mailto:kamaldeeeppurba@gmail.com?subject=${encodeURIComponent('Website Contact: ' + subject)}&body=${encodeURIComponent(emailBody)}`;
                 
                 // Open mailto link
                 window.location.href = mailtoLink;
                 
                 // Show success message
                 setTimeout(() => {
+                    successMessage.innerHTML = '✅ Email client opened! Please send the message to complete.';
                     successMessage.style.display = 'block';
                     submitBtn.textContent = 'Send Message';
                     submitBtn.disabled = false;
@@ -407,15 +540,17 @@ Sent from your website contact form`;
             });
         });
         
-        // Test EmailJS configuration
-        function testEmailJSConfig() {
-            // This would be called after proper EmailJS setup
-            // For now, we use mailto fallback
-            console.log('Using mailto fallback - EmailJS not configured yet');
-        }
-        
-        // Initialize
-        testEmailJSConfig();
+        // Auto-hide setup notice after form interaction
+        inputs.forEach(input => {
+            input.addEventListener('input', function() {
+                if (!emailjsConfigured) {
+                    const setupNotice = document.getElementById('setupNotice');
+                    setTimeout(() => {
+                        setupNotice.style.opacity = '0.7';
+                    }, 2000);
+                }
+            });
+        });
     </script>
 </body>
 </html>
