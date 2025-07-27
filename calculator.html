@@ -97,6 +97,31 @@
             color: #28a745;
             font-weight: bold;
         }
+        
+        .contact-link-container {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .contact-link {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.95em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 15px;
+            border-radius: 20px;
+            background-color: rgba(102, 126, 234, 0.1);
+            display: inline-block;
+        }
+        
+        .contact-link:hover {
+            background-color: rgba(102, 126, 234, 0.2);
+            color: #764ba2;
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
@@ -123,6 +148,10 @@
         </form>
         
         <div id="result" class="result" style="display: none;"></div>
+        
+        <div class="contact-link-container">
+            <a href="contact.html" class="contact-link">📧 Contact Me</a>
+        </div>
     </div>
 
     <script>
