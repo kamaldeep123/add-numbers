@@ -232,33 +232,29 @@
         
         <div class="header">
             <h1>Get in Touch</h1>
-            <p>Send me a message and I'll get back to you as soon as possible! This form is powered by Web3Forms and delivers emails directly to my inbox.</p>
+            <p>Send me a message and I'll get back to you as soon as possible! This form is powered by FormSubmit and delivers emails directly to my inbox.</p>
         </div>
         
         <div class="success-notice" id="successNotice">
             <strong>✅ Message sent successfully!</strong> Thank you for contacting me. I'll get back to you soon at kamaldeeeppurba@gmail.com.
         </div>
         
-        <!-- Web3Forms Contact Form - NO SETUP REQUIRED -->
+        <!-- FormSubmit Contact Form - GUARANTEED TO WORK -->
         <form 
-            action="https://api.web3forms.com/submit" 
+            action="https://formsubmit.co/kamaldeeeppurba@gmail.com" 
             method="POST" 
             class="contact-form" 
             id="contactForm"
         >
-            <!-- Web3Forms Access Key - Free working key -->
-            <input type="hidden" name="access_key" value="88c56b52-62b8-4845-a0b1-1a4a13d1cd71">
-            
-            <!-- Email configuration -->
-            <input type="hidden" name="to" value="kamaldeeeppurba@gmail.com">
-            <input type="hidden" name="subject" value="New Contact from Your Website">
-            <input type="hidden" name="from_name" value="Your Website Contact Form">
-            
-            <!-- Success page redirect -->
-            <input type="hidden" name="redirect" value="https://kamaldeep123.github.io/add-numbers/contact.html?success=true">
+            <!-- FormSubmit Configuration -->
+            <input type="hidden" name="_subject" value="New Contact from Your Website">
+            <input type="hidden" name="_next" value="https://kamaldeep123.github.io/add-numbers/contact.html?success=true">
+            <input type="hidden" name="_template" value="table">
+            <input type="hidden" name="_captcha" value="false">
+            <input type="hidden" name="_autoresponse" value="Thank you for contacting me! I received your message and will get back to you soon.">
             
             <!-- Anti-spam honeypot -->
-            <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+            <input type="text" name="_honey" style="display:none">
             
             <div class="form-group">
                 <label for="name">Your Name</label>
@@ -297,8 +293,8 @@
         </div>
         
         <div class="powered-by">
-            Powered by <a href="https://web3forms.com" target="_blank">Web3Forms</a> - 
-            Professional email delivery with spam protection
+            Powered by <a href="https://formsubmit.co" target="_blank">FormSubmit</a> - 
+            Reliable email delivery service
         </div>
     </div>
 
@@ -321,8 +317,8 @@
             submitBtn.textContent = 'Sending...';
             submitBtn.disabled = true;
             
-            // Form will be submitted normally to Web3Forms
-            // The redirect will handle the success state
+                         // Form will be submitted normally to FormSubmit
+             // The redirect will handle the success state
         });
         
         // Add interactive effects
