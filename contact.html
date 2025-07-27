@@ -4,6 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us - Three Number Calculator</title>
+    
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            // Initialize EmailJS with your public key
+            // You'll need to replace 'YOUR_PUBLIC_KEY' with your actual EmailJS public key
+            emailjs.init({
+                publicKey: "YOUR_PUBLIC_KEY", // Replace with your EmailJS public key
+            });
+        })();
+    </script>
+    
     <style>
         * {
             margin: 0;
@@ -133,6 +146,12 @@
             transform: translateY(0);
         }
         
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
         .contact-info {
             text-align: center;
             padding-top: 30px;
@@ -178,28 +197,36 @@
             transform: translateX(-3px);
         }
         
-        .success-message {
-            display: none;
-            background-color: #d4edda;
-            color: #155724;
+        .message {
             padding: 15px;
             border-radius: 10px;
             margin-bottom: 20px;
-            border: 1px solid #c3e6cb;
             text-align: center;
             font-weight: 500;
+            display: none;
+        }
+        
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
         }
         
         .error-message {
-            display: none;
             background-color: #f8d7da;
             color: #721c24;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
             border: 1px solid #f5c6cb;
-            text-align: center;
-            font-weight: 500;
+        }
+        
+        .setup-notice {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+            margin-bottom: 30px;
+        }
+        
+        .setup-notice strong {
+            color: #667eea;
         }
 
         @media (max-width: 768px) {
@@ -229,23 +256,31 @@
             <p>Have a question, suggestion, or just want to say hello? I'd love to hear from you! Send me a message and I'll get back to you as soon as possible.</p>
         </div>
         
-        <div class="success-message" id="successMessage">
-            Thank you for your message! I'll get back to you soon.
+        <!-- Setup Notice -->
+        <div class="message setup-notice" id="setupNotice">
+            <strong>Setup Required:</strong> To enable direct email sending, please follow the setup instructions in the <strong>EMAILJS_SETUP.md</strong> file. For now, the form will use a mailto fallback.
         </div>
         
-        <div class="error-message" id="errorMessage">
-            Sorry, there was an error sending your message. Please try again or contact me directly.
+        <div class="message success-message" id="successMessage">
+            ✅ Thank you for your message! I'll get back to you soon.
         </div>
         
-        <form class="contact-form" id="contactForm" action="contact_handler.php" method="POST">
+        <div class="message error-message" id="errorMessage">
+            ❌ Sorry, there was an error sending your message. Please try again or contact me directly.
+        </div>
+        
+        <form class="contact-form" id="contactForm">
+            <!-- Hidden field for timestamp -->
+            <input type="hidden" name="timestamp" id="timestamp">
+            
             <div class="form-group">
-                <label for="name">Your Name</label>
-                <input type="text" id="name" name="name" required placeholder="Enter your full name">
+                <label for="from_name">Your Name</label>
+                <input type="text" id="from_name" name="from_name" required placeholder="Enter your full name">
             </div>
             
             <div class="form-group">
-                <label for="email">Your Email</label>
-                <input type="email" id="email" name="email" required placeholder="Enter your email address">
+                <label for="from_email">Your Email</label>
+                <input type="email" id="from_email" name="from_email" required placeholder="Enter your email address">
             </div>
             
             <div class="form-group">
@@ -271,68 +306,95 @@
     </div>
 
     <script>
+        // Set timestamp when page loads
+        document.getElementById('timestamp').value = new Date().toLocaleString();
+        
+        // Check if EmailJS is properly configured
+        let emailjsConfigured = false;
+        
+        // Show setup notice initially
+        document.getElementById('setupNotice').style.display = 'block';
+        
         document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
             const submitBtn = document.getElementById('submitBtn');
             const successMessage = document.getElementById('successMessage');
             const errorMessage = document.getElementById('errorMessage');
+            const setupNotice = document.getElementById('setupNotice');
             
             // Hide previous messages
             successMessage.style.display = 'none';
             errorMessage.style.display = 'none';
+            setupNotice.style.display = 'none';
             
             // Show loading state
             submitBtn.textContent = 'Sending...';
             submitBtn.disabled = true;
             
-            // Get form data
-            const formData = new FormData(this);
+            // Try EmailJS first if configured
+            if (typeof emailjs !== 'undefined' && emailjsConfigured) {
+                // EmailJS sending
+                emailjs.sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', this)
+                    .then(function(response) {
+                        console.log('EmailJS SUCCESS!', response.status, response.text);
+                        successMessage.style.display = 'block';
+                        document.getElementById('contactForm').reset();
+                        document.getElementById('timestamp').value = new Date().toLocaleString();
+                    })
+                    .catch(function(error) {
+                        console.log('EmailJS FAILED...', error);
+                        // Fallback to mailto
+                        sendViaMailto();
+                    })
+                    .finally(function() {
+                        submitBtn.textContent = 'Send Message';
+                        submitBtn.disabled = false;
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    });
+            } else {
+                // Fallback to mailto
+                sendViaMailto();
+            }
             
-            // Try to send via PHP handler first
-            fetch('contact_handler.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    successMessage.style.display = 'block';
-                    this.reset();
-                } else {
-                    throw new Error(data.message);
-                }
-            })
-            .catch(error => {
-                // Fallback to mailto if PHP handler fails
-                console.log('PHP handler failed, using mailto fallback:', error);
-                
-                const name = formData.get('name');
-                const email = formData.get('email');
+            function sendViaMailto() {
+                const formData = new FormData(document.getElementById('contactForm'));
+                const name = formData.get('from_name');
+                const email = formData.get('from_email');
                 const subject = formData.get('subject');
                 const message = formData.get('message');
+                const timestamp = formData.get('timestamp');
                 
-                const mailtoLink = `mailto:kamaldeeeppurba@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`)}`;
+                const emailBody = `Name: ${name}
+Email: ${email}
+Time: ${timestamp}
+
+Subject: ${subject}
+
+Message:
+${message}
+
+---
+Sent from your website contact form`;
+                
+                const mailtoLink = `mailto:kamaldeeeppurba@gmail.com?subject=${encodeURIComponent('Contact Form: ' + subject)}&body=${encodeURIComponent(emailBody)}`;
                 
                 // Open mailto link
                 window.location.href = mailtoLink;
                 
-                // Show success message after a delay
+                // Show success message
                 setTimeout(() => {
                     successMessage.style.display = 'block';
-                    this.reset();
+                    submitBtn.textContent = 'Send Message';
+                    submitBtn.disabled = false;
+                    document.getElementById('contactForm').reset();
+                    document.getElementById('timestamp').value = new Date().toLocaleString();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 }, 1000);
-            })
-            .finally(() => {
-                submitBtn.textContent = 'Send Message';
-                submitBtn.disabled = false;
-                
-                // Scroll to top to show message
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
+            }
         });
         
-        // Add some interactive effects
+        // Add interactive effects
         const inputs = document.querySelectorAll('input, textarea');
         inputs.forEach(input => {
             input.addEventListener('focus', function() {
@@ -344,6 +406,16 @@
                 this.parentElement.style.transform = 'scale(1)';
             });
         });
+        
+        // Test EmailJS configuration
+        function testEmailJSConfig() {
+            // This would be called after proper EmailJS setup
+            // For now, we use mailto fallback
+            console.log('Using mailto fallback - EmailJS not configured yet');
+        }
+        
+        // Initialize
+        testEmailJSConfig();
     </script>
 </body>
 </html>
